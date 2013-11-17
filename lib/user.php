@@ -175,12 +175,20 @@ class User
 			$email = self::userIdToEmail($userId);
 
 			if ($email == false) {
+				Utils::changeHttpStatus(421);
 				return false;
 			}
 
 			// Check password with email instead of user ID as internal
 			// Owncloud ID and LDAP user ID are likely not to match
-			return (\OCP\User::checkPassword($email, $password) != false);
+			if (\OCP\User::checkPassword($email, $password) != false) {
+				return true;
+			} else {
+				Utils::changeHttpStatus(422);
+				return false;
+			}
+		} else {
+			Utils::changeHttpStatus(420);
 		}
 
 		return false;

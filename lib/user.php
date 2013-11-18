@@ -134,15 +134,18 @@ class User
 	public static function authenticateUser($userHash) {
 
 		if(!isset($_SERVER['PHP_AUTH_USER'])) {
+			Utils::changeHttpStatus(440);
 			return false;
 		}
 		// user name parameter and authentication user name doen't match
 		if($userHash != $_SERVER['PHP_AUTH_USER']) {
+			Utils::changeHttpStatus(441);
 			return false;
 		}
 
 		$userId = self::userHashToUserName($userHash);
 		if($userId == false) {
+			Utils::changeHttpStatus(442);
 			return false;
 		}
 
@@ -173,14 +176,21 @@ class User
 			$email = self::userIdToEmail($userId);
 
 			if ($email == false) {
+				Utils::changeHttpStatus(443);
 				return false;
 			}
 
 			// Check password with email instead of user ID as internal
 			// Owncloud ID and LDAP user ID are likely not to match
-			return (\OCP\User::checkPassword($email, $password) != false);
+			if (\OCP\User::checkPassword($email, $password) != false) {
+				return true;
+			else {
+				Utils::changeHttpStatus(444);
+				return false;
+			}
 		}
 
+		Utils::changeHttpStatus(445);
 		return false;
 	}
 

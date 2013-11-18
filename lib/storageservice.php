@@ -36,13 +36,12 @@ class StorageService extends Service
 		$syncUserHash = $this->urlParser->getUserName();
 
 		if(User::authenticateUser($syncUserHash) == false) {
-			Utils::changeHttpStatus(Utils::STATUS_INVALID_USER);
 			return false;
 		}
 
 		$userId = User::userHashToId($syncUserHash);
 		if($userId == false) {
-			Utils::changeHttpStatus(Utils::STATUS_INVALID_USER);
+			Utils::changeHttpStatus(449);
 			return false;
 		}
 

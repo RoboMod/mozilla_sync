@@ -184,7 +184,7 @@ class User
 			// Owncloud ID and LDAP user ID are likely not to match
 			if (\OCP\User::checkPassword($email, $password) != false) {
 				return true;
-			else {
+			} else {
 				Utils::changeHttpStatus(444);
 				return false;
 			}
